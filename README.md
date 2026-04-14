@@ -11,23 +11,75 @@ Your goal is to:
 - Evaluate what your system gets right and wrong
 - Reflect on how this mirrors real world AI recommenders
 
-Replace this paragraph with your own summary of what your version does.
+This simulation builds a simple content-based recommender that matches a user's preferred "vibe" to songs using song attributes. It prioritizes interpretability and small-scale experiments: songs are scored by similarity to a user's preferred genre, energy, valence (mood), and tempo, then ranked and returned. The focus is on clear, explainable scoring rules and on showing how weighting features changes recommendations.
 
 ---
 
 ## How The System Works
 
-Explain your design in plain language.
+This music recommender system suggests songs based on a user’s preferences using a content-based filtering approach. It compares each song in the dataset to a user profile and assigns a score based on how well the song matches the user’s taste.
 
-Some prompts to answer:
+### Algorithm Recipe
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+The system uses a weighted scoring method with three main components:
 
-You can include a simple diagram or bullet list if helpful.
+- Genre match (40%)
+- Mood match (30%)
+- Audio feature similarity (30%)
+
+#### 1. Genre Scoring
+- 1.0 if the song’s genre is in the user’s favorite genres
+- 0.0 if the song’s genre is in the user’s disliked genres
+- 0.5 otherwise (neutral)
+
+#### 2. Mood Scoring
+- 1.0 if the song’s mood matches the user’s preferred moods
+- 0.5 otherwise
+
+#### 3. Audio Feature Similarity
+The system compares numerical features such as:
+- Energy
+- Valence (happiness)
+- Danceability
+
+Similarity is calculated using a distance-based formula:
+
+similarity = max(0, 1 - |song_value - user_value| / tolerance)
+
+The final audio score is the average of these similarities.
+
+#### 4. Final Score
+The overall score is calculated as:
+
+score = 0.4 * genre_score + 0.3 * mood_score + 0.3 * audio_score
+
+Each song is scored and then ranked from highest to lowest. The system recommends the top K songs.
+
+### Data Flow
+
+Input:
+- User preferences (genre, mood, energy, etc.)
+- Song dataset (songs.csv)
+
+Process:
+- Loop through each song
+- Calculate a score based on the algorithm
+- Assign score to each song
+
+Output:
+- Songs sorted by score
+- Top K recommendations returned to the user
+
+### Potential Biases
+
+This system may introduce several biases:
+
+- It may over-prioritize genre, potentially ignoring songs from other genres that match the user’s mood or energy.
+- It relies only on numerical features and predefined categories, so it cannot capture deeper aspects of music such as lyrics, cultural context, or personal memories.
+- Songs that are very similar to past preferences may be recommended repeatedly, reducing diversity.
+
+Despite these limitations, the system provides a simple and interpretable way to generate personalized music recommendations.
+
 
 ---
 
@@ -208,4 +260,7 @@ A few sentences about what you learned:
 - What surprised you about how your system behaved
 - How did building this change how you think about real music recommenders
 - Where do you think human judgment still matters, even if the model seems "smart"
+```
 
+## Example Output
+![CLI Output](CLI_Output.png)

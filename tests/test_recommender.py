@@ -48,10 +48,16 @@ def test_recommend_returns_songs_sorted_by_score():
 
 def test_explain_recommendation_returns_non_empty_string():
     user = UserProfile(
-        favorite_genre="pop",
-        favorite_mood="happy",
+        favorite_genres=["pop", "rock"],
+        disliked_genres=["lofi"],
+        favorite_moods=["happy", "energetic"],
         target_energy=0.8,
-        likes_acoustic=False,
+        energy_tolerance=0.15,
+        likes_acoustic=None,               # None = no strong preference
+        preferred_tempo=(100, 140),        # bpm range
+        preferred_danceability=(0.6, 1.0),
+        preferred_valence=(0.6, 1.0),
+        exploration_factor=0.2,            # 0..1, how much serendipity to allow
     )
     rec = make_small_recommender()
     song = rec.songs[0]
