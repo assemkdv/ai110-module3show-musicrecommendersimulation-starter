@@ -81,45 +81,30 @@ def load_songs(csv_path: str) -> List[Dict]:
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """
     Scores a single song against user preferences.
-    Required by recommend_songs() and src/main.py
     Returns: (score, reasons)
     """
     score = 0.0
     reasons: List[str] = []
 
-    # Genre match
-    user_genre = (user_prefs.get("favorite_genre") or "").strip().lower()
-    song_genre = (song.get("genre") or "").strip().lower()
-    if user_genre and song_genre and user_genre == song_genre:
+    # Genre match (strong)
+    if song["genre"] == user_prefs.get("favorite_genre"):
         score += 2.0
         reasons.append("genre match (+2.0)")
 
     # Mood match
-    user_mood = (user_prefs.get("favorite_mood") or "").strip().lower()
-    song_mood = (song.get("mood") or "").strip().lower()
-    if user_mood and song_mood and user_mood == song_mood:
+    if song["mood"] == user_prefs.get("favorite_mood"):
         score += 1.0
         reasons.append("mood match (+1.0)")
 
-    # Energy similarity: similarity = 1 - abs(song_value - user_value)
-    try:
-        user_energy = float(user_prefs.get("target_energy", 0.0))
-    except (TypeError, ValueError):
-        user_energy = 0.0
-    try:
-        song_energy = float(song.get("energy", 0.0))
-    except (TypeError, ValueError):
-        song_energy = 0.0
+    # Energy similarity
+    user_energy = user_prefs.get("target_energy", 0.5)
+    song_energy = song.get("energy", 0.0)
 
-    similarity = 1.0 - abs(song_energy - user_energy)
-    # clamp to [0, 1]
-    if similarity < 0.0:
-        similarity = 0.0
-    elif similarity > 1.0:
-        similarity = 1.0
+    similarity = 1 - abs(song_energy - user_energy)
+    similarity = max(0.0, similarity)
 
     score += similarity
-    reasons.append(f"energy close to preference (+{similarity:.1f})")
+    reasons.append(f"energy close to preference (+{similarity:.2f})")
 
     return score, reasons
 

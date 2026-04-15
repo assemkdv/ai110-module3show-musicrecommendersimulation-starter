@@ -279,3 +279,5 @@ A few sentences about what you learned:
 
 ### Conflicting Profile
 ![Edge Case](edge_case.png)
+
+
