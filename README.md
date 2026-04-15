@@ -264,3 +264,18 @@ A few sentences about what you learned:
 
 ## Example Output
 ![CLI Output](CLI_Output.png)
+
+
+## Stress Test Results
+
+### High-Energy Pop
+![High Energy](high_energy.png)
+
+### Chill Lofi
+![Chill Lofi](chill_lofi.png)
+
+### Intense Rock
+![Intense Rock](intense_rock.png)
+
+### Conflicting Profile
+![Edge Case](edge_case.png)
